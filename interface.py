@@ -65,7 +65,7 @@ def main():
         if args.recursive:
             rename_with_recursion(args.filepath)
         else:
-            rename(args.file)
+            rename(args.filepath)
     elif args.command == "get_size":
         print(get_size(args.filepath))
 
