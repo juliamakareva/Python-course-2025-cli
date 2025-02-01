@@ -1,6 +1,6 @@
 import sys
 import argparse
-from manager import copy, delete, move_file, show_files, search, count_files, rename,rename_with_recursion, get_creation_time, get_size
+from manager import copy, delete, move_file, show_files, search, count_files, rename,rename_with_recursion, get_creation_time, get_size,analyze
 from datetime import datetime
 import shutil
 import os
@@ -45,6 +45,9 @@ def main():
     parser_get_size = subparsers.add_parser("get_size", help="Show the size of files")
     parser_get_size.add_argument("filepath", help="Filepath")
 
+    parser_analyze = subparsers.add_parser("analyze", help="Analyze the size of files")
+    parser_analyze.add_argument("src", help="Filepath")
+
     args = parser.parse_args()
 
     # Вызов соответствующей команды в зависимости от аргументов
@@ -63,11 +66,13 @@ def main():
 
     elif args.command == "rename":
         if args.recursive:
-            rename_with_recursion(args.filepath)
+            rename_with_recursion(args.src)
         else:
-            rename(args.filepath)
+            rename(args.src)
     elif args.command == "get_size":
-        print(get_size(args.filepath))
+        print(get_size(args.src))
+    elif args.command == "analyze":
+        analyze(args.src)
 
     else:
         print("Error : wrong arguments")

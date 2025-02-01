@@ -58,15 +58,15 @@ def get_creation_time(path):
     return datetime.fromtimestamp(creation_time).strftime('%d-%m-%Y_%H-%M-%S')
 
 
-def rename(filepath):
-    creation_time = get_creation_time(filepath)
-    name, ext = os.path.splitext(filepath)
+def rename(src):
+    creation_time = get_creation_time(src)
+    name, ext = os.path.splitext(src)
     new_filename = f"{name}_{creation_time}{ext}"
-    os.rename(filepath, new_filename)
+    os.rename(src, new_filename)
 
 
-def rename_with_recursion(filepath):
-    for root, dirs, files in os.walk(filepath):
+def rename_with_recursion(src):
+    for root, dirs, files in os.walk(src):
         for file in files:
             file_path = os.path.join(root, file)
             rename(file_path)
@@ -93,20 +93,27 @@ def convert_size(func):
 
 
 @convert_size
-def get_size(filepath):
+def get_size(src):
     total_size = 0
-    if os.path.isfile(filepath):
-        total_size = os.path.getsize(filepath)
-    elif os.path.isdir(filepath):
-        for root, dirs, files in os.walk(filepath):
+    if os.path.isfile(src):
+        total_size = os.path.getsize(src)
+    elif os.path.isdir(src):
+        for root, dirs, files in os.walk(src):
             for file in files:
                 file_path = os.path.join(root, file)
                 total_size += os.path.getsize(file_path)
     return total_size
 
 
-"""@convert_size
-def analyze(folder):
-    total_size = 0
-    size_folders = []
-    for root, dirs, files in os.walk(folder)"""
+def analyze(src):
+    files = {}
+
+    # Проходим по файлам/папкам в указанной директории
+    for file in os.listdir(src):
+        file_path = os.path.join(src, file)
+        size = get_size(file_path)
+        files[file] = size  # Сохраняем имя файла и его размер в словарь
+
+    for file, size in files.items():
+        print(f"{file}: {size}")
+
