@@ -8,15 +8,16 @@ from functools import wraps
 def copy(src, dst):
     if os.path.isdir(src):
         shutil.copytree(src, dst)
-        print(f"Папка '{src}' скопирована в '{dst}'")
+        print(f"The folder '{src}' has been copied to '{dst}'")
     elif os.path.isfile(src):
         shutil.copy(src, dst)
-        print(f"Your file '{src}' скопирована в '{dst}'")
+        print(f"Your file '{src}' has been copied to '{dst}'")
     else:
         print(f"Error: file or folder doesn't exist")
 
 
 def move_file(src, dst):
+    """The function is used to move files"""
     shutil.move(src, dst)
     print(f"Your file/folder'{src}' has been moved to  '{dst}'")
 
@@ -102,6 +103,7 @@ def get_size(filepath):
                 file_path = os.path.join(root, file)
                 total_size += os.path.getsize(file_path)
     return total_size
+
 
 """@convert_size
 def analyze(folder):
