@@ -117,3 +117,20 @@ def analyze(src):
     for file, size in files.items():
         print(f"{file}: {size}")
 
+
+def organize(unorganized_folder):
+    # Для каждого файла в папке
+    for filename in os.listdir(unorganized_folder):
+        file_path = os.path.join(unorganized_folder, filename)
+
+        # Если файл имеет расширение
+        if "." in filename:
+            ext = filename.split(".")[-1]  # Получаем расширение файла
+            ext_folder = os.path.join(unorganized_folder, ext)
+
+            # Если папки с таким расширением не существует, создаём её
+            if not os.path.exists(ext_folder):
+                os.mkdir(ext_folder)
+
+            # Перемещаем файл в соответствующую папку
+            shutil.move(file_path, os.path.join(ext_folder, filename))

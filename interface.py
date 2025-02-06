@@ -5,8 +5,7 @@ from manager import copy, delete, move_file, show_files, search, count_files, re
 
 def main():
     parser = argparse.ArgumentParser(prog='File_Manager',
-                                     description='A simple program working with files in Python',
-                                     epilog='Text at the bottom of help')
+                                     description='A simple program working with files in Python')
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -14,38 +13,42 @@ def main():
     parser_copy.add_argument("src", help="Source file")
     parser_copy.add_argument("dst", help="Destination file")
 
-    # Добавление команды для удаления
+    # Adding a command for delete
     parser_delete = subparsers.add_parser("delete", help="Delete a file or folder")
     parser_delete.add_argument("src", help="Source file or folder to delete")
 
-    # Добавление команды для перемещения
+    # Adding a move command
     parser_move = subparsers.add_parser("move", help="Move a file or folder")
     parser_move.add_argument("src", help="Source file or folder")
     parser_move.add_argument("dst", help="Destination location")
 
+    # Adding a command to show files
     parser_show_files = subparsers.add_parser("show", help="Show a file or folder")
     parser_show_files.add_argument("src", help="Source file or folder to show")
+
+    # Adding a command to search files/folder with a filter
 
     parser_search = subparsers.add_parser("search", help="Search a file or a folder with a specific filter")
     parser_search.add_argument("src", help="Source folder")
     parser_search.add_argument("pattern", help="Which filter should be used for a search")
 
+    # Adding a command to count files
     parser_count_files = subparsers.add_parser("count", help="Count the number of files")
     parser_count_files.add_argument("src", help="Filepath")
-
+    # Adding a command to rename files
     parser_rename = subparsers.add_parser("rename", help="Rename a file")
-    parser_rename.add_argument("filepath", help="File")
+    parser_rename.add_argument("src", help="File's source")
     parser_rename.add_argument("--recursive", action="store_true", help="Rename a whole folder")
-
+    # Adding a command to get a size
     parser_get_size = subparsers.add_parser("get_size", help="Show the size of files")
     parser_get_size.add_argument("filepath", help="Filepath")
-
+    # Adding a command to analyze the size of files
     parser_analyze = subparsers.add_parser("analyze", help="Analyze the size of files")
     parser_analyze.add_argument("src", help="Filepath")
 
     args = parser.parse_args()
 
-    # Вызов соответствующей команды в зависимости от аргументов
+    #
     if args.command == "copy":
         copy(args.src, args.dst)
     elif args.command == "delete":
