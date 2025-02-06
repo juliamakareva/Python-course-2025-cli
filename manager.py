@@ -6,6 +6,7 @@ from functools import wraps
 
 
 def copy(src, dst):
+    """This function is used to copy giles or folders"""
     if os.path.isdir(src):
         shutil.copytree(src, dst)
         print(f"The folder '{src}' has been copied to '{dst}'")
@@ -23,17 +24,19 @@ def move_file(src, dst):
 
 
 def delete(src):
-    if os.path.isdir(src):  # Проверяем, является ли `src` папкой
-        shutil.rmtree(src)  # Удаляем папку и всё её содержимое
-        print(f"Папка '{src}' удалена")
-    elif os.path.isfile(src):  # Проверяем, является ли `src` файлом
-        os.remove(src)  # Удаляем файл
-        print(f"Файл '{src}' удалён")
+    """This function is used to delete files/ folders"""
+    if os.path.isdir(src):
+        shutil.rmtree(src)
+        print(f"The folder '{src}' is deleted")
+    elif os.path.isfile(src):
+        os.remove(src)
+        print(f"The file '{src}' is deleted")
     else:
-        print("Ошибка: файл или папка не найдены")
+        print("Error: the file/ or folder is not found")
 
 
 def count_files(src):
+    """This function counts files"""
     total = 0
     for root, dirs, files in os.walk(src):
         total += len(files)
@@ -41,10 +44,12 @@ def count_files(src):
 
 
 def show_files(src):
+    """This function shows the files"""
     print(*os.listdir(src))
 
 
 def search(src, pattern):
+    """This function helps to search files with a filter"""
     searched_files = []
     for address, dirs, files in os.walk(src):
         for file in files:
@@ -54,11 +59,13 @@ def search(src, pattern):
 
 
 def get_creation_time(path):
+    """This function helps to find out the creation time of a file"""
     creation_time = os.path.getctime(path)
     return datetime.fromtimestamp(creation_time).strftime('%d-%m-%Y_%H-%M-%S')
 
 
 def rename(src):
+    """This function is used to rename the file"""
     creation_time = get_creation_time(src)
     name, ext = os.path.splitext(src)
     new_filename = f"{name}_{creation_time}{ext}"
@@ -66,6 +73,7 @@ def rename(src):
 
 
 def rename_with_recursion(src):
+    """This function is used to rename all files in a folder with recursion"""
     for root, dirs, files in os.walk(src):
         for file in files:
             file_path = os.path.join(root, file)
@@ -106,31 +114,30 @@ def get_size(src):
 
 
 def analyze(src):
+    """The function which analyze the folder showing the items and their sizes"""
     files = {}
 
-    # Проходим по файлам/папкам в указанной директории
     for file in os.listdir(src):
         file_path = os.path.join(src, file)
         size = get_size(file_path)
-        files[file] = size  # Сохраняем имя файла и его размер в словарь
+        files[file] = size
 
     for file, size in files.items():
         print(f"{file}: {size}")
 
 
 def organize(unorganized_folder):
-    # Для каждого файла в папке
+    """The function which organize the files by their extension  """
     for filename in os.listdir(unorganized_folder):
         file_path = os.path.join(unorganized_folder, filename)
 
-        # Если файл имеет расширение
         if "." in filename:
-            ext = filename.split(".")[-1]  # Получаем расширение файла
+            ext = filename.split(".")[-1]  # Getting the file extension
             ext_folder = os.path.join(unorganized_folder, ext)
 
-            # Если папки с таким расширением не существует, создаём её
+            # Creating in folder
             if not os.path.exists(ext_folder):
                 os.mkdir(ext_folder)
 
-            # Перемещаем файл в соответствующую папку
+            # Moving the file to a created folder
             shutil.move(file_path, os.path.join(ext_folder, filename))
