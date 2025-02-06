@@ -1,8 +1,9 @@
 import os
 import shutil
 import unittest
-from unittest.mock import patch, MagicMock
-from manager import copy, move_file, delete, count_files, show_files, search
+from unittest.mock import patch
+from manager import copy, move_file, delete, count_files, show_files, search, get_creation_time, rename, \
+    organize
 
 
 class TestCopyFunctionWithMock(unittest.TestCase):
@@ -122,6 +123,41 @@ class TestSearchFunction(unittest.TestCase):
 
         # Assert the result matches the expected output
         self.assertEqual(result, expected)
+
+
+class TestRenameFunction(unittest.TestCase):
+    @patch('os.rename')
+    @patch('manager.get_creation_time', return_value="2025-02-06")
+    def test_rename_file(self, mock_get_creation_time, mock_rename):
+        src = 'path/to/file.txt'
+
+        rename(src)
+
+        mock_get_creation_time.assert_called_once_with(src)
+
+        new_filename = 'path/to/file_2025-02-06.txt'
+        mock_rename.assert_called_once_with(src, new_filename)
+
+
+class TestOrganize(unittest.TestCase):
+    class TestOrganize(unittest.TestCase):
+
+        @patch('shutil.move')
+        @patch('os.mkdir')
+        @patch('os.path.exists', return_value=False)
+        @patch('os.listdir', return_value=['file1.txt', 'file2.jpg', 'file3.txt'])
+        def test_organize(self, mock_listdir, mock_exists, mock_mkdir, mock_move):
+            organize('/mock_folder')
+
+            mock_mkdir.assert_any_call('/mock_folder/txt')
+            mock_mkdir.assert_any_call('/mock_folder/jpg')
+
+            mock_move.assert_any_call('/mock_folder/file1.txt', '/mock_folder/txt/file1.txt')
+            mock_move.assert_any_call('/mock_folder/file2.jpg', '/mock_folder/jpg/file2.jpg')
+            mock_move.assert_any_call('/mock_folder/file3.txt', '/mock_folder/txt/file3.txt')
+
+            self.assertEqual(mock_mkdir.call_count, 2)
+            self.assertEqual(mock_move.call_count, 3)
 
 
 if __name__ == '__main__':
