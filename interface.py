@@ -61,7 +61,7 @@ def main():
     elif args.command == "show":
         show_files(args.src)
     elif args.command == "search":
-        search(args.src, args.pattern)
+        print(search(args.src, args.pattern))
     elif args.command == "count":
         print(count_files(args.src))
 

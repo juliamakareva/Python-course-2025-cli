@@ -14,7 +14,7 @@ def copy(src, dst):
         shutil.copy(src, dst)
         print(f"Your file '{src}' has been copied to '{dst}'")
     else:
-        print(f"Error: file or folder doesn't exist")
+        print("Error: file or folder doesn't exist")
 
 
 def move_file(src, dst):
@@ -55,7 +55,7 @@ def search(src, pattern):
         for file in files:
             if re.search(pattern, file):
                 searched_files.append(os.path.join(address, file))
-    print(searched_files)
+    return searched_files
 
 
 def get_creation_time(path):
