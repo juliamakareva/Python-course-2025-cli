@@ -1,11 +1,6 @@
-import sys
 import argparse
-from manager import copy, delete, move_file, show_files, search, count_files, rename,rename_with_recursion, get_creation_time, get_size,analyze
-from datetime import datetime
-import shutil
-import os
-import sys
-import re
+from manager import copy, delete, move_file, show_files, search, count_files, rename, rename_with_recursion, \
+    get_creation_time, get_size, analyze
 
 
 def main():
@@ -40,7 +35,7 @@ def main():
 
     parser_rename = subparsers.add_parser("rename", help="Rename a file")
     parser_rename.add_argument("filepath", help="File")
-    parser_rename.add_argument("--recursive", action="store_true",help="Rename a whole folder")
+    parser_rename.add_argument("--recursive", action="store_true", help="Rename a whole folder")
 
     parser_get_size = subparsers.add_parser("get_size", help="Show the size of files")
     parser_get_size.add_argument("filepath", help="Filepath")
