@@ -1,6 +1,6 @@
 import argparse
 from manager import copy, delete, move_file, show_files, search, count_files, rename, rename_with_recursion, \
-    get_creation_time, get_size, analyze
+    get_creation_time, get_size, analyze, organize
 
 
 def main():
@@ -41,10 +41,13 @@ def main():
     parser_rename.add_argument("--recursive", action="store_true", help="Rename a whole folder")
     # Adding a command to get a size
     parser_get_size = subparsers.add_parser("get_size", help="Show the size of files")
-    parser_get_size.add_argument("filepath", help="Filepath")
+    parser_get_size.add_argument("src", help="Filepath")
     # Adding a command to analyze the size of files
     parser_analyze = subparsers.add_parser("analyze", help="Analyze the size of files")
     parser_analyze.add_argument("src", help="Filepath")
+
+    parser_organize = subparsers.add_parser("organize", help="Organize the files using their extensions")
+    parser_organize.add_argument("unorganized_folder", help="Insert the path to an unorganized_folder")
 
     args = parser.parse_args()
 
@@ -71,6 +74,9 @@ def main():
         print(get_size(args.src))
     elif args.command == "analyze":
         analyze(args.src)
+
+    elif args.command == "organize":
+        organize(args.unorganized_folder)
 
     else:
         print("Error : wrong arguments")
