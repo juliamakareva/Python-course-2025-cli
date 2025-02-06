@@ -1,4 +1,4 @@
-##Python File Manager
+## Python File Manager
 
 > A simple file manager built with Python that allows you to execute some basic operations easily.
 
