@@ -74,7 +74,19 @@ def main(page: ft.Page):
     }
 
     operation_input = ft.TextField(hint_text="Define your operation ...", width=200, visible=False)
+    # buttons settings
 
+    confirm_button = ft.ElevatedButton("Confirm", on_click=lambda e: confirm_operation(), bgcolor="#829F82",
+                                       color="white", visible=False)
+    help_button = ft.ElevatedButton("Help", on_click=lambda e: show_help(), bgcolor="#B06500", color="white",
+                                    visible=False)
+    execute_button = ft.ElevatedButton("Execute", on_click=lambda e: execute_operation(), bgcolor="green",
+                                       color="white", visible=False)
+    cancel_button = ft.ElevatedButton("Cancel", on_click=lambda e: cancel_operation(), bgcolor="red", color="white",
+                                      visible=False)
+    pick_destination_button = ft.ElevatedButton("Pick Destination", bgcolor="#36454F",
+                                                on_click=lambda _: pick_destination_dialog.get_directory_path(),
+                                                visible=False)
     def confirm_operation():
         user_input = operation_input.value.strip().lower()
         if user_input in operations:
