@@ -4,6 +4,8 @@
 
 ## Features
 
+### UPDATE : Now using the Flet GUI !
+
 1. Copy Files & Folders.
 
 2. Delete Files & Folders.
