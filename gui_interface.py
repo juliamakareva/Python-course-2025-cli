@@ -27,7 +27,6 @@ def main(page: ft.Page):
         weight=ft.FontWeight.BOLD,
         text_align=ft.TextAlign.CENTER
     )
-
     # selected file or folder
     selected_source = Text("")
     dst_path = Text("")
@@ -40,14 +39,18 @@ def main(page: ft.Page):
         if e.files:
             selected_source.value = e.files[0].path
             selected_source.update()
-
+            operation_input.visible = True
+            confirm_button.visible = True
+            help_button.visible = True
             page.update()
 
     def pick_directory_result(e: FilePickerResultEvent):
         if e.path:
             selected_source.value = e.path
             selected_source.update()
-
+            operation_input.visible = True
+            confirm_button.visible = True
+            help_button.visible = True
             page.update()
 
     def pick_destination_result(e: FilePickerResultEvent):
@@ -74,6 +77,7 @@ def main(page: ft.Page):
     }
 
     operation_input = ft.TextField(hint_text="Define your operation ...", width=200, visible=False)
+
     # buttons settings
 
     confirm_button = ft.ElevatedButton("Confirm", on_click=lambda e: confirm_operation(), bgcolor="#829F82",
@@ -88,6 +92,7 @@ def main(page: ft.Page):
                                                 on_click=lambda _: pick_destination_dialog.get_directory_path(),
                                                 visible=False)
 
+    # help configuration
     def show_help():
         page.dialog = help_dialog
         help_dialog.open = True
@@ -108,10 +113,70 @@ def main(page: ft.Page):
     def confirm_operation():
         user_input = operation_input.value.strip().lower()
         if user_input in operations:
+            execute_button.visible = True
+            cancel_button.visible = True
+            confirm_button.visible = False
+            help_button.visible = False
             output_text.value = f" Press Execute to launch {operations[user_input][0].lower()} operation."
+            if user_input in ["copy", "move"]:
+                pick_destination_button.visible = True
+            elif user_input == "search":
+                search_pattern_input.visible = True  # filter input for search function
+            page.update()
         else:
             output_text.value = "⚠ Invalid operation! Check the Help menu."
             page.update()
+
+    def execute_operation():
+        user_input = operation_input.value.strip().lower()
+        file_path = selected_source.value.strip()
+
+        if user_input in operations:
+            operation_name, function = operations[user_input]
+            try:
+                if user_input in ["copy", "move"]:
+                    if dst_path.value == "No destination selected":
+                        output_text.value = "⚠ Please select a destination path."
+                        page.update()
+                        return
+                    function(file_path, dst_path.value)
+                elif user_input == "search":
+                    pattern = search_pattern_input.value.strip()
+                    if not pattern:
+                        output_text.value = "⚠ Please enter a valid search pattern."
+                        page.update()
+                        return
+                    # Appeler la fonction search() avec le motif
+                    search_results = search(file_path, pattern)
+                    if search_results:
+                        output_text.value = f"🔍 Found the following files:\n" + "\n".join(search_results)
+                    else:
+                        output_text.value = "⚠ No files found matching the pattern."
+                elif user_input == "analyze":
+                    result = function(file_path)  # Appeler la fonction d'analyse
+                    output_text.value = f"✅ {operation_name} completed! Result: {result if result else 'Check your terminal'}"
+                else:
+                    result = function(file_path)
+                    output_text.value = f"✅ {operation_name} completed! Result: {result if result else 'Done'}"
+                page.update()
+            except Exception as err:
+                output_text.value = f"❌ : {err}"
+                page.update()
+        else:
+            output_text.value = "⚠ Invalid operation! Check the Help menu."
+            page.update()
+
+    def cancel_operation():
+        """to reset all and back to the welcome page """
+        execute_button.visible = False
+        cancel_button.visible = False
+        pick_destination_button.visible = False
+        output_text.value = ""
+        operation_input.visible = False
+        search_pattern_input.visible = False
+        selected_source.value = ""
+        dst_path.value = ""
+        page.update()
 
     page.add(
         ft.Column([
@@ -126,15 +191,19 @@ def main(page: ft.Page):
             selected_source,
             Row([
                 operation_input,
-
+                confirm_button,
+                help_button
             ], alignment=ft.MainAxisAlignment.CENTER),
             Row([
-
+                execute_button,
+                cancel_button
             ], alignment=ft.MainAxisAlignment.CENTER),
+            pick_destination_button,
             dst_path,
             search_pattern_input,
             output_text,
         ], expand=True, alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     )
 
-    ft.app(target=main)
+
+ft.app(target=main)
