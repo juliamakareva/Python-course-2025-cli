@@ -10,6 +10,7 @@ from flet import (
 
 from manager import copy, delete, move_file, search, count_files, get_size, analyze, organize
 
+
 def main(page: ft.Page):
     page.title = "File Manager"
     image_path = "Smartphone_icon_17_File_Manager-512.webp"
@@ -27,7 +28,7 @@ def main(page: ft.Page):
         text_align=ft.TextAlign.CENTER
     )
 
-# selected file or folder
+    # selected file or folder
     selected_source = Text("")
     dst_path = Text("")
     output_text = ft.Text("", color="red")
@@ -60,23 +61,50 @@ def main(page: ft.Page):
     pick_destination_dialog = FilePicker(on_result=pick_destination_result)
     page.overlay.extend([pick_files_dialog, pick_directory_dialog, pick_destination_dialog])
 
+    # operations list
+    operations = {
+        "copy": ("📋 Copy", copy),
+        "move": ("📂 Move File --move", move_file),
+        "delete": ("🗑 Delete", delete),
+        "search": ("🔍 Search", search),
+        "count": ("📁 Count Files -- count", count_files),
+        "size": ("📏 Get Size -- size", get_size),
+        "analyze": ("📊 Analyze", analyze),
+        "organize": ("🗃 Organize", organize)
+    }
+
+    operation_input = ft.TextField(hint_text="Define your operation ...", width=200, visible=False)
+
+    def confirm_operation():
+        user_input = operation_input.value.strip().lower()
+        if user_input in operations:
+            output_text.value = f" Press Execute to launch {operations[user_input][0].lower()} operation."
+        else:
+            output_text.value = "⚠ Invalid operation! Check the Help menu."
+            page.update()
+
     page.add(
         ft.Column([
             image,
             title,
             Row([
                 ElevatedButton("Pick File", bgcolor="#36454F", icon=icons.UPLOAD_FILE,
-                               on_click=lambda _: pick_files_dialog.pick_files()),  # Bouton pour choisir un fichier
+                               on_click=lambda _: pick_files_dialog.pick_files()),
                 ElevatedButton("Pick Directory", bgcolor="#36454F", icon=icons.FOLDER_OPEN,
                                on_click=lambda _: pick_directory_dialog.get_directory_path()),
-                # Bouton pour choisir un répertoire
-            ], alignment=ft.MainAxisAlignment.CENTER),  # Centrer les boutons dans la ligne
+            ], alignment=ft.MainAxisAlignment.CENTER),
+            selected_source,
+            Row([
+                operation_input,
 
-        ],
-            expand=True,  # Permet à la colonne d'occuper tout l'espace disponible
-            alignment=ft.MainAxisAlignment.CENTER,  # Centrer le contenu de la colonne verticalement
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER  # Centrer horizontalement
-        )
- )
+            ], alignment=ft.MainAxisAlignment.CENTER),
+            Row([
 
-ft.app(target=main)
+            ], alignment=ft.MainAxisAlignment.CENTER),
+            dst_path,
+            search_pattern_input,
+            output_text,
+        ], expand=True, alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+    )
+
+    ft.app(target=main)
