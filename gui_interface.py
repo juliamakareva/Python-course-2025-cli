@@ -87,6 +87,24 @@ def main(page: ft.Page):
     pick_destination_button = ft.ElevatedButton("Pick Destination", bgcolor="#36454F",
                                                 on_click=lambda _: pick_destination_dialog.get_directory_path(),
                                                 visible=False)
+
+    def show_help():
+        page.dialog = help_dialog
+        help_dialog.open = True
+        page.update()
+
+    def close_help(e):
+        help_dialog.open = False
+        page.update()
+
+    help_dialog = ft.AlertDialog(
+        modal=True,
+        title=ft.Text("Operations list"),
+        content=ft.Column([ft.Text(name) for name, _ in operations.values()], spacing=10),
+        actions=[ft.TextButton("OK", on_click=close_help)],
+        actions_alignment=ft.MainAxisAlignment.END
+    )
+
     def confirm_operation():
         user_input = operation_input.value.strip().lower()
         if user_input in operations:
